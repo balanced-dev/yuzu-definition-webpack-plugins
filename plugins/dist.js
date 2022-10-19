@@ -16,45 +16,42 @@ const templatesPath = `${root}${sep}src${sep}`
 const markupPath = `${root}${sep}markup${sep}`
 
 class YuzuDist {
-  isPageBlock(filePath)
-  {
+  isPageBlock(filePath) {
     return this.getBlockType(filePath) === 'pages';
   }
-  getBlockType(filePath)
-  {
+
+  getBlockType(filePath) {
     var type = filePath.split('/')[3];
-    if(type == '_dataStructures') type = 'blocks';
+    if (type == '_dataStructures') type = 'blocks';
     return type;
   }
+
   getFile(filePath) {
-
     return {
-      contents : fs.readFileSync(filePath, 'utf8'),
-      name : path.basename(filePath),
-      type : this.getBlockType(filePath)
+      contents: fs.readFileSync(filePath, 'utf8'),
+      name: path.basename(filePath),
+      type: this.getBlockType(filePath)
     }
-
   }
-  addData(compilation, externals) {
 
+  addData(compilation, externals) {
     var jsonFiles = glob.sync(options.dist.data);
 
     jsonFiles.forEach((filePath) => {
 
-      if(this.isPageBlock(filePath)) {
+      if (this.isPageBlock(filePath)) {
 
         let file = this.getFile(filePath);
 
         let data = yuzu.build.resolveDataString(file.contents, filePath, externals, []);
-  
+
         this.emitFile(`${dataPath}${path.basename(file.name)}`, JSON.stringify(data, null, 4), compilation);
       }
 
     });
-
   }
-  addSchema(compilation, externals) {
 
+  addSchema(compilation, externals) {
     var schemaFiles = glob.sync(options.dist.schema);
 
     schemaFiles.forEach((filePath) => {
@@ -62,9 +59,9 @@ class YuzuDist {
       let file = this.getFile(filePath);
 
       let schema = yuzu.build.resolveSchema(file.contents, externals);
-      if(!this.isPageBlock(filePath) && schema.properties && schema.type == "object") {
-          schema.properties['_ref'] = { "type": "string" };
-          schema.properties['_modifiers'] = { "type": "array", "items": { "type": "string" } };
+      if (!this.isPageBlock(filePath) && schema.properties && schema.type == "object") {
+        schema.properties['_ref'] = { "type": "string" };
+        schema.properties['_modifiers'] = { "type": "array", "items": { "type": "string" } };
       }
 
       this.emitFile(`${schemaPath}${file.type}${sep}${file.name}`, JSON.stringify(schema, null, 4), compilation);
@@ -73,10 +70,9 @@ class YuzuDist {
       this.emitFile(`${schemaMetaPath}${file.name}`, JSON.stringify(schemaMeta, null, 4), compilation);
 
     });
-
   }
-  addHbs(compilation) {
 
+  addHbs(compilation) {
     var hbsFiles = glob.sync(options.dist.hbs);
 
     hbsFiles.forEach((filePath) => {
@@ -86,10 +82,9 @@ class YuzuDist {
       this.emitFile(`${templatesPath}${file.type}${sep}${file.name}`, file.contents, compilation);
 
     });
+  }
 
-  }  
   addMarkup(compilation) {
-
     var markupFiles = glob.sync(options.dist.markup);
 
     markupFiles.forEach((filePath) => {
@@ -99,10 +94,9 @@ class YuzuDist {
       this.emitFile(`${markupPath}${file.type}${sep}${file.name}`, file.contents, compilation);
 
     });
-
   }
+
   emitFile(filename, output, compilation) {
-  
     compilation.assets[filename] = {
       source: function() {
         return output;
@@ -111,8 +105,8 @@ class YuzuDist {
         return output.length;
       }
     }
-
   }
+
   apply(compiler) {
     // emit is asynchronous hook, tapping into it using tapAsync, you can use tapPromise/tap(synchronous) as well
     compiler.hooks.emit.tapAsync('YuzuDist', (compilation, callback) => {

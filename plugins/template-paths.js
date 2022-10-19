@@ -12,8 +12,8 @@ class YuzuTemplatePaths {
     // emit is asynchronous hook, tapping into it using tapAsync, you can use tapPromise/tap(synchronous) as well
     compiler.hooks.emit.tapAsync('YuzuTemplatePaths', (compilation, callback) => {
 
-      const dependencies = Array.from(compilation.fileDependencies).filter((item) => { 
-        return item.includes(options.templatesRoot) && path.extname(item) === '.json' 
+      const dependencies = Array.from(compilation.fileDependencies).filter((item) => {
+        return item.includes(options.templatesRoot) && path.extname(item) === '.json'
       });
 
       const previews = yuzu.build.getPreviews(dependencies, this.rootPath);
