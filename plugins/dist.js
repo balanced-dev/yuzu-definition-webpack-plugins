@@ -8,6 +8,7 @@ const glob = require('glob');
 const defaultOptions = {
   outputFolderRoot: "./_templates/",
   sources: {
+    root: './_dev/_templates',
     data: './_dev/_templates/**/*.json',
     schema: './_dev/_templates/**/*.schema',
     hbs: './_dev/_templates/**/*.hbs',
@@ -86,8 +87,8 @@ class YuzuDist {
       const schemaEmitPath = `${this.options.outputFolderRoot}/schema/${file.type}/${file.name}`;
       this.emitFile(schemaEmitPath, JSON.stringify(schema, null, 4), compilation);
 
-      let schemaMeta = yuzu.build.resolvePaths(file.contents, externals);
-      const metaEmitPath = `${this.options.outputFolderRoot}/paths/${file.name}`;
+      let schemaMeta = yuzu.build.resolvePaths(file.contents, externals, filePath.replace(this.options.sources.root, ''));
+      const metaEmitPath = `${this.options.outputFolderRoot}/schema/${file.type}/${file.name.replace('.schema', '.meta')}`;
       this.emitFile(metaEmitPath, JSON.stringify(schemaMeta, null, 4), compilation);
     });
   }

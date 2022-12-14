@@ -1,6 +1,6 @@
 {
   "name": "yuzu-definition-webpack-plugins",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Webpack integration for Yuzu",
   "main": "index.js",
   "scripts": {},
