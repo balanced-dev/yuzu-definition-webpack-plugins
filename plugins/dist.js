@@ -84,11 +84,11 @@ class YuzuDist {
         schema.properties['_modifiers'] = { "type": "array", "items": { "type": "string" } };
       }
 
-      const schemaEmitPath = `${this.options.outputFolderRoot}/schema/${file.type}/${file.name}`;
+      const schemaEmitPath = `${this.options.outputFolderRoot}/schema/${file.name}`;
       this.emitFile(schemaEmitPath, JSON.stringify(schema, null, 4), compilation);
 
       let schemaMeta = yuzu.build.resolvePaths(file.contents, externals, filePath.replace(this.options.sources.root, ''));
-      const metaEmitPath = `${this.options.outputFolderRoot}/schema/${file.type}/${file.name.replace('.schema', '.meta')}`;
+      const metaEmitPath = `${this.options.outputFolderRoot}/schema/${file.name.replace('.schema', '.meta')}`;
       this.emitFile(metaEmitPath, JSON.stringify(schemaMeta, null, 4), compilation);
     });
   }
@@ -99,7 +99,7 @@ class YuzuDist {
     hbsFiles.forEach((filePath) => {
       const file = this.getFile(filePath);
 
-      const hbsEmitPath = `${this.options.outputFolderRoot}/src/${file.type}/${file.name}`;
+      const hbsEmitPath = `${this.options.outputFolderRoot}/src/${file.name}`;
       this.emitFile(hbsEmitPath, file.contents, compilation);
     });
   }
